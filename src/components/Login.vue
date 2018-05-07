@@ -40,6 +40,7 @@ import axios from 'axios';
     },
     methods:{
       onSubmit(){
+        //管理和非管理员
         axios.get('/users.json')
              .then(res => {
               console.log(res.data)
@@ -51,8 +52,6 @@ import axios from 'axios';
                 users.push(user)
               }
 
-              // console.log(users)
-
               // 实现过滤
               let result = users.filter((user) => {
                 return user.email === this.email && user.password === this.password
@@ -61,7 +60,11 @@ import axios from 'axios';
               // console.log(result)
               // 判断result的长度是否大于0
               if(result != null && result.length > 0){
+                var selectCity=JSON.stringify(result)
+                window.localStorage.setItem("user",selectCity);
                 this.$router.push({name:"homeLink"})
+                // 设置store数据是否登录
+                window.location.reload()
               }else{
                 alert("账号或密码错误!")
               }

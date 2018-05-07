@@ -1,2 +1,16 @@
 bootstrap4.0.0和3是有区别的
 jquery插件安装
+
+引入Vue的一些自定义标签
+import Vue from 'vue'
+import 'vuetify/dist/vuetify.min.css'
+import Vuetify from 'vuetify'
+和bootstrap样式有冲突
+
+
+Vue.use(Vuetify)
+
+ref使用 未知
+
+
+

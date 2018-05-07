@@ -60,9 +60,9 @@ export default {
       'deleteAddress'
     ]),
     getReceivingAddress () {
-      this.getUserInfo().then((userInfo) => {
-        this.addressList = userInfo.deliveryAddresses
-      })
+      // this.getUserInfo().then((userInfo) => {
+      //   this.addressList = userInfo.deliveryAddresses
+      // })
     },
     submit () {
       if (!this.address) {

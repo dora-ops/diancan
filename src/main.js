@@ -4,10 +4,22 @@ import App from './App.vue'
 import {routes} from './routes'
 import axios from 'axios'
 import $ from 'jquery'
+import Vuetify from 'vuetify'
+// import 'vuetify/dist/vuetify.min.css'
+// import HDialog from './components/core/master.vue'
+
+// Vue.component(HDialog.name, HDialog)
 
 import {store} from './store/store.js'
 
+
+// Vue.component(HDialog.name, HDialog)
 Vue.use(VueRouter)
+Vue.use(Vuetify)
+// Vue.use(HDialog)
+
+
+
 
 // 配置默认根路径
 axios.defaults.baseURL = "https://wd6585637672byszoe.wilddogio.com/"
@@ -54,6 +66,7 @@ const router = new VueRouter({
 
 new Vue({
   el: '#app',
+  // template:'<div><App></App><HDialog ref="hDialog" ></HDialog></div>',
   router,
   store,
   render: h => h(App)

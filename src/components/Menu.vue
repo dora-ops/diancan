@@ -2,36 +2,8 @@
   
   
   <div class="row">
-    <!-- <transition name="el-fade-in-linear">
-    <div draggable="true" @drag="mouseDrag" @dragend="mouseDragend" :style="dialogStyle" class="g-dialog-wrapper" v-show="myVisible">
-      <div class="g-dialog-header">
-        <div class="left">
-          模态框
-        </div>
-        <div class="right">
-          <i class="g-times-icon fa fa-times" @click="myVisible=false" aria-hidden="true"></i>
-        </div>
-      </div>
-      <div class="g-dialog-container">
-
-      </div>
-    </div>
-  </transition>
-  <g-key-dialog :visible.sync="myVisible">123</g-key-dialog> -->
-    <!-- <v-container class="personal-center">
-    <v-row>
-      <v-col xs3>
-        <div v-for="button in buttonGroup">
-          <a :href="'' + button.path">
-            <v-btn block dark large class="teal" >{{button.name}}</v-btn>
-          </a>
-        </div>
-      </v-col>
-      <v-col xs9>
-        <router-view></router-view>
-      </v-col>
-    </v-row>
-  </v-container> -->
+   
+  
   <!-- <v-dialog v-model='isVisibility'>
       <v-btn primary dark slot='activator'>添加收货地址</v-btn>
       <v-card>
@@ -52,39 +24,41 @@
       </v-card>
     </v-dialog> -->
 
-        <!-- 按钮：用于打开模态框 -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-      打开模态框
-    </button>
-    
-    <!-- 模态框 -->
-    <div class="modal fade" id="myModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-    
-          <!-- 模态框头部 -->
-          <div class="modal-header">
-            <h4 class="modal-title">模态框头部</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
-    
-          <!-- 模态框主体 -->
-          <div class="modal-body">
-            模态框内容..
-          </div>
-    
-          <!-- 模态框底部 -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-          </div>
-    
-        </div>
+             <!-- <button 
+               @click="showModal()"
+                class="btn btn-sm btn-outline-success">+</button>
+
+
+ 
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+ 
+     
+      <div class="modal-header">
+        <h4 class="modal-title">模态框头部</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-    </div>
+ 
    
+      <div class="modal-body">
+        模态框内容..
+      </div>
+ 
+    
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+ 
+    </div>
+  </div>
+</div>
+    -->
      <!-- 分类 -->
     <div class="col-sm-12 col-md-12">
       <div class="col-sm-12 col-md-4">
+        <!-- 竖边导航栏 -->
       </div>
       
     </div>
@@ -105,7 +79,7 @@
             <td><strong>{{item.name}}</strong></td>
           </tr>
           <tr v-for="option in item.options" :key="option.size">
-            <td>{{item.sname}}</td>
+            <td><a v-bind:href="'/pro?sname='+item.sname+'&size='+option.size+'&price='+option.price"><span>{{item.sname}}</span></a></td>
             <td>{{option.size}}</td>
             <td>{{option.price}}</td>
             <td>
@@ -126,7 +100,7 @@
                 <tr>
                   <th>数量</th>
                   <th>种类</th>
-                  <th>名称</th>
+                  <th>名称-尺寸</th>
                   <th>价格</th>
                 </tr>
               </thead>
@@ -160,6 +134,8 @@
 
 // import 'bootstrap/dist/css/bootstrap.min.css'
 // import 'bootstrap/dist/js/bootstrap.min.js'
+import $ from 'jquery'
+
 
 export default {
   name: "personal-center",
@@ -167,28 +143,12 @@ export default {
     return {
       baskets: [],
       basketText: "购物车没有任何商品",
-      myVisible: this.visible,
-      isVisibility: false,
-      showModal: false,
-      buttonGroup: [
-        {
-          name: "我的订单",
-          path: "my-order"
-        },
-        {
-          name: "管理收货地址",
-          path: "manage-receiving-address"
-        },
-        {
-          name: "修改密码",
-          path: "change-password"
-        }
-      ]
       //getMenuItems:{}
     };
   },
   // props: ['show'],
   computed: {
+    
     getMenuItems() {
       // 在vuex中获取数据
       // return this.$store.state.menuItems
@@ -208,6 +168,7 @@ export default {
   },
   created() {
     this.fetchData();
+    
   },
   methods: {
     fetchData() {
@@ -267,18 +228,12 @@ export default {
     removeFromBasket(item) {
       this.baskets.splice(this.baskets.indexOf(item), 1);
     },
-    show() {
-      this.showModal = true;
+    generateOrder(){
+      //生产订单，跳到详情页
+      //评价生成，评价详情
     }
-    // close: function () { this.$emit('close'); }
+    
   },
-  watch: {
-    myVisible: function(val) {
-      this.$emit("update:visible", val);
-    },
-    visible: function(val) {
-      this.myVisible = val;
-    }
-  }
+  
 };
 </script>

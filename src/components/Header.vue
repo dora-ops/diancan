@@ -20,20 +20,57 @@
         <li><router-link :to="{name:'aboutLink'}" class="nav-link">关于我们</router-link></li>
       </ul>
 
+      <template v-if="!isLogin&&!isInLogin">
       <ul class="navbar-nav ml-auto">
         <li><router-link :to="{name:'loginLink'}" class="nav-link">登录</router-link></li>
         <li><router-link :to="{name:'registerLink'}" class="nav-link">注册</router-link></li>
       </ul>
+      </template>
+      <template v-else>
+        <ul class="navbar-nav ml-auto">
+        <li>邮箱:{{user.email}}</li>
+        <li v-on:click="loginOut()"><font color="blue">退出</font></li>
+        </ul>
+      </template>
+      
     </nav>
   </header>
 </template>
 <script>
-  export default{
-    // data(){
-    //   return {
-    //     homeLink:'/'
-    //   }
-    // }
-  }  
-
+export default {
+  data() {
+    return {
+      homeLink: "/",
+      isLogin: false,
+      user: { email: "123" }
+    };
+  },
+  computed: {
+    isInLogin() {
+      var currentCity = localStorage.getItem("user");
+      if (currentCity) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
+  created() {
+    var currentCity = localStorage.getItem("user");
+    if (currentCity) {
+      var user = JSON.parse(currentCity);
+      this.isLogin = true;
+      this.user = user[0];
+    } else {
+      this.isLogin = false;
+    }
+  },
+  methods: {
+    loginOut() {
+      this.isLogin = false;
+      window.localStorage.removeItem("user");
+      this.$router.push({ name: "loginLink" });
+    }
+  }
+};
 </script>
