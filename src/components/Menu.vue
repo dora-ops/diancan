@@ -23,10 +23,11 @@
         </v-card-row>
       </v-card>
     </v-dialog> -->
+    
 
              <!-- <button 
                @click="showModal()"
-                class="btn btn-sm btn-outline-success">+</button>
+                class="btn btn-sm btn-outline-success">按钮</button> -->
 
 
  
@@ -37,24 +38,59 @@
  
      
       <div class="modal-header">
-        <h4 class="modal-title">模态框头部</h4>
+        <h4 class="modal-title">商品修改</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
  
    
       <div class="modal-body">
-        模态框内容..
+        <div class="form-group row">
+          <label class="col-sm-1">种类</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" v-model="pro.name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-1">名称</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" v-model="pro.sname">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-1">描述</label>
+          <div class="col-sm-11">
+            <textarea rows="5" class="form-control" v-model="pro.description"></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label class="col-sm-1">尺寸</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" v-model="pro.size">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-1">价格</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" v-model="pro.price">
+          </div>
+    </div>
+
       </div>
  
     
       <div class="modal-footer">
+       
         <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+         <button type="button" class="btn btn-primary" @click="updateItem()">
+					提交
+				</button>
       </div>
  
     </div>
   </div>
 </div>
-    -->
+   
      <!-- 分类 -->
     <div class="col-sm-12 col-md-12">
       <div class="col-sm-12 col-md-4">
@@ -70,18 +106,26 @@
             <th>名称</th>
             <th>尺寸</th>
             <th>价格</th>
+            <th>操作</th>
             <th>加入</th>
           </tr>
         </thead>
-        <tbody v-for="item in getMenuItems" :key="item.name">
+        <tbody v-for="item in getMenuItems" :key="item.uuid">
          
           <tr>
             <td><strong>{{item.name}}</strong></td>
           </tr>
-          <tr v-for="option in item.options" :key="option.size">
-            <td><a v-bind:href="'/pro?sname='+item.sname+'&size='+option.size+'&price='+option.price"><span>{{item.sname}}</span></a></td>
+          <tr v-for="option in item.options" :key="option.uuid">
+            <td><a v-bind:href="'/pro?sname='+item.sname+'&size='+option.size+'&price='+option.price+'&uuid='+option.uuid"><span>{{item.sname}}</span></a></td>
             <td>{{option.size}}</td>
             <td>{{option.price}}</td>
+            <td><button 
+               @click="showModal(option.uuid)"
+                class="btn btn-sm btn-outline-success">修改</button>
+                <button 
+               @click="deleteItem(option.uuid)"
+                class="btn btn-sm btn-outline-success">删除</button>
+                </td>
             <td>
               <button 
                 @click="addToBasket(item,option)"
@@ -104,7 +148,7 @@
                   <th>价格</th>
                 </tr>
               </thead>
-              <tbody v-for="item in baskets" :key="item.name">
+              <tbody v-for="item in baskets" :key="item.uuid">
                 <tr>
                   <td>
                     <button @click="decreaseQuantity(item)" class="btn btn-sm">-</button>
@@ -118,7 +162,7 @@
               </tbody>
             </table>
             <p>总价: {{total + "RMB"}}</p>
-            <button class="btn btn-success btn-block">提交</button>
+            <button class="btn btn-success btn-block" @click="generateOrder()">提交</button>
       </div>
       <div v-else>
         {{basketText}}
@@ -131,11 +175,10 @@
   </div>
 </template>
 <script>
-
 // import 'bootstrap/dist/css/bootstrap.min.css'
 // import 'bootstrap/dist/js/bootstrap.min.js'
-import $ from 'jquery'
-
+// import $ from 'jquery'
+//  import {$} from '../cookie.js'
 
 export default {
   name: "personal-center",
@@ -143,18 +186,20 @@ export default {
     return {
       baskets: [],
       basketText: "购物车没有任何商品",
-      //getMenuItems:{}
+      user: {},
+      pro: {
+        price: "",
+        size: "",
+        name: "",
+        sname: "",
+        description: "",
+        uuid: ""
+      },
+      getMenuItems: {}
     };
   },
   // props: ['show'],
   computed: {
-    
-    getMenuItems() {
-      // 在vuex中获取数据
-      // return this.$store.state.menuItems
-      // 通过getters获取数据
-      return this.$store.getters.getMenuItems;
-    },
     total() {
       let totalCost = 0;
 
@@ -167,29 +212,34 @@ export default {
     }
   },
   created() {
+    //在computed之前
     this.fetchData();
-    
   },
   methods: {
     fetchData() {
-      // fetch("https://wd6585637672byszoe.wilddogio.com/menu.json")
-      //   .then(res => {
-      //     return res.json()
-      //   })
-      //   .then(data => {
-      //     this.getMenuItems = data
-      //   })
-
-      // axios.get("menu.json")
-      //      .then(res => this.getMenuItems = res.data)
-
-      // this.http.get("menu.json")
-      //          .then(res => this.getMenuItems = res.data)
-
+      Array.prototype.indexOf = function(val) {
+        for (var i = 0; i < this.length; i++) {
+          if (this[i] == val) return i;
+        }
+        return -1;
+      };
+      Array.prototype.remove = function(val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+          this.splice(index, 1);
+        }
+      };
       // 将请求下来的数据存储到vuex中
-      this.http
-        .get("menu.json")
-        .then(res => this.$store.commit("setMenuItems", res.data));
+      this.http.get("menu.json").then(res => {
+        this.getMenuItems = res.data;
+      });
+      const currentUser = this.$store.getters.currentUser;
+
+      const basket = this.getCookie(this.user.mail) || [];
+      var user = JSON.parse(basket);
+      const total = this.getCookie(this.user.mail + "total");
+      this.baskets = user;
+      this.total = parseInt(total);
     },
     addToBasket(item, option) {
       let basket = {
@@ -228,12 +278,88 @@ export default {
     removeFromBasket(item) {
       this.baskets.splice(this.baskets.indexOf(item), 1);
     },
-    generateOrder(){
+    generateOrder() {
+      let baskets = this.baskets;
+      let total = this.total;
       //生产订单，跳到详情页
+      this.$store.commit("setBasket", { baskets: baskets, total: total });
+      // this.$store.commit('setBasket',{baskets})
+      // console.log(total)
+      // window.location.reload()
+      this.setCookie(this.user.mail, JSON.stringify(baskets));
+      this.setCookie(this.user.mail + "total", total);
+      this.$router.push({ name: "orderLink" });
+
       //评价生成，评价详情
+    },
+    //写cookies
+    setCookie(name, value) {
+      var Days = 30;
+      var exp = new Date();
+      exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+      document.cookie =
+        name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+    },
+
+    getCookie(name) {
+      var arr,
+        reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+      if ((arr = document.cookie.match(reg))) return unescape(arr[2]);
+      else return null;
+    },
+    showModal(uuid) {
+      var data = this.getMenuItems;
+      for (const key in data) {
+        const item = data[key];
+        for (const element of item.options) {
+          if (element.uuid == uuid) {
+            let pro = {};
+            pro.name = item.name;
+            pro.sname = item.sname;
+            pro.description = item.description;
+            pro.size = element.size;
+            pro.price = element.price;
+            pro.uuid = element.uuid;
+            console.log(pro);
+            this.pro = pro;
+          }
+        }
+      }
+      $("#myModal").modal("show");
+    },
+    deleteItem(uuid) {
+      var data = this.getMenuItems;
+      for (const key in data) {
+        const item = data[key];
+        for (const element of item.options) {
+          if (element.uuid == uuid) {
+            item.options.remove(element);
+          }
+        }
+        if (item.options.length == 0) {
+          delete data[key];
+        }
+      }
+    },
+    updateItem() {
+      var data = this.getMenuItems;
+      var pro = this.pro;
+      for (const key in data) {
+        const item = data[key];
+        for (const element of item.options) {
+          if (element.uuid == pro.uuid) {
+            // item.options.remove(element);
+            element.price = pro.price;
+            element.size = pro.size;
+            item.name = pro.name;
+            item.sname = pro.sname;
+            item.description = pro.description;
+            data[key] = item;
+          }
+        }
+      }
+      $("#myModal").modal("hide");
     }
-    
-  },
-  
+  }
 };
 </script>

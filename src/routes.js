@@ -1,6 +1,7 @@
 import Home from './components/Home'
 import Menu from './components/Menu'
 import Product from './components/Product'
+import Order from './components/Order'
 // import ManageReceivingAddress from './components/ManageReceivingAddress'
 // import hello from './components/Hello'
 import Admin from './components/Admin'
@@ -29,22 +30,30 @@ export const routes = [
   },
   { path: '/menu', name: "menuLink", component: Menu },
   { path: '/pro', name: "proLink", component: Product },
+  { path: '/order', name: "orderLink", component: Order },
 
   {
     path: '/admin', name: "adminLink", component: Admin,
     beforeEnter: (to, from, next) => {
       // 路由独享守卫
       // alert("非登陆状态,不能访问此页面!");
-      next(false);
-
-      // 判断store.gettes.isLogin === false
-      if (to.path == '/login' || to.path == '/register') {
-        next();
+      // next(false);
+      var currentUser = localStorage.getItem("user");
+      if (currentUser) {
+        currentUser = JSON.parse(currentUser);
+        if (currentUser[0].email=='1@qq.com') {
+          next();
+        } else {
+          alert("您不是管理员，无权限操作!");
+          next('/');
+        }
       } else {
-        alert("还没有登录，请先登录!");
-        next();
-        // next('/login');
+        alert("您还未登陆!");
+        next('/login');
       }
+      // console.log(user)
+      // 判断store.gettes.isLogin === false
+     
     }
   },
   {

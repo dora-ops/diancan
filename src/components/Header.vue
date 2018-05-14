@@ -69,6 +69,7 @@ export default {
     loginOut() {
       this.isLogin = false;
       window.localStorage.removeItem("user");
+      // this.$store.mutations.userStatus(null);
       this.$router.push({ name: "loginLink" });
     }
   }

@@ -8,19 +8,30 @@ export const store = new Vuex.Store({
     // 设置属性
     menuItems:{},
     currentUser: null,
-    isLogin:false
+    isLogin:false,
+    //当前用户的购物车
+    basket:[]
   },
   getters:{
     // 获取属性的状态
     getMenuItems: state => state.menuItems,
-    currentUser:state => state.currentUser,
-    isLogin:state => state.isLogin
+    getCurrentUser:state => state.currentUser,
+    isLogin:state => state.isLogin,
+    getBasket:state=>state.basket
   },
   mutations:{
     // 改变属性的状态
-    setMenuItems(state,data){
+    setBasket(state,data){
+      // alert("修改数据")
+      state.basket = data
+      console.log(state.basket)
+    },
+
+     // 改变属性的状态
+     setMenuItems(state,data){
       state.menuItems = data
     },
+
     // 将匹配到对象,在menuItems数组中删除
     removeMenuItems(state,data){
       state.menuItems.forEach((item,index) => {

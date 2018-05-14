@@ -4,6 +4,7 @@ import App from './App.vue'
 import {routes} from './routes'
 import axios from 'axios'
 import $ from 'jquery'
+// import $ from 'jquery'
 import Vuetify from 'vuetify'
 // import 'vuetify/dist/vuetify.min.css'
 // import HDialog from './components/core/master.vue'
@@ -20,7 +21,11 @@ Vue.use(Vuetify)
 
 
 
+// var a=new axios();
+// var b=new axios();
 
+// a.defaults.baseURL="localhost"
+// b.defaults.baseURL = "https://wd6585637672byszoe.wilddogio.com/"
 // 配置默认根路径
 axios.defaults.baseURL = "https://wd6585637672byszoe.wilddogio.com/"
 

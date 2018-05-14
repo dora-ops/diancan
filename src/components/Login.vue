@@ -62,6 +62,9 @@ import axios from 'axios';
               if(result != null && result.length > 0){
                 var selectCity=JSON.stringify(result)
                 window.localStorage.setItem("user",selectCity);
+                const store=this.$store;
+                console.log(store)
+                // this.$store.mutations.userStatus(result);
                 this.$router.push({name:"homeLink"})
                 // 设置store数据是否登录
                 window.location.reload()

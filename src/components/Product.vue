@@ -55,30 +55,33 @@ export default {
     fetchData() {
       // debugger;
       let htp = this.http;
+      // this.$store.commit("setMenuItems", element);
       this.http.get("menu.json").then(res => {
-        const data=res.data;
-        const value=this.getQueryString('sname');
-        const size=this.getQueryString('size');
-        const price=this.getQueryString('price');
+        const data = res.data;
+        // this.$store.getters.getMenuItems;
+        const value = this.getQueryString("sname");
+        const size = this.getQueryString("size");
+        const price = this.getQueryString("price");
+        const uuid = this.getQueryString("uuid");
         for (const key in data) {
-         
-            const element = data[key];
-            if (element.sname==value) {
-               element.size=size;
-               element.price=price;
-               this.$store.commit("setMenuItems", element);
+          const item = data[key];
+          item.options.forEach(element => {
+            
+            if (element.uuid == uuid) {
+              item.size=element.size
+              item.price=element.price
+              this.$store.commit("setMenuItems", item);
             }
-          
+          });
         }
-       
       });
     },
-    getQueryString(name) {  
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");  
-        var r = window.location.search.substr(1).match(reg);  
-        if (r != null) return unescape(r[2]);  
-        return null;  
-    }  
+    getQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
+    }
   }
 };
 </script>

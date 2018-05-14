@@ -77,7 +77,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery",
-      "windows.jQuery": "jquery"
+     
     })
   ])
 }
